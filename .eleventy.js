@@ -7,7 +7,8 @@ module.exports = function(eleventyConfig) {
 
   // Add CSS processing
   eleventyConfig.addPassthroughCopy({
-    "src/tailwind.css": "tailwind.css"
+    "src/tailwind.css": "tailwind.css",
+    "src/styles.css": "styles.css"
   });
 
   return {

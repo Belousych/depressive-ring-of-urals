@@ -1,74 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photo Gallery</title>
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="styles.css" rel="stylesheet">
-</head>
-<body class="bg-gray-900 text-white">
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl mb-8 border-b border-gray-700 pb-4">Photo Gallery</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {% for photo in collections.photos %}
-      <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:transform hover:scale-105">
-        <a href="#" class="photo-link" data-full-url="{{ photo.sizes[0].url }}">
-          <img class="w-full h-80 object-cover" src="{{ photo.preview }}" alt="{{ photo.name }}">
-        </a>
-        <div class="p-4">
-          <div class="text-lg font-bold mb-2">{{ photo.name }}</div>
-          <div class="text-sm text-gray-400">{{ photo.photoslice_time }}</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Gallery</title>
+    <!-- Tailwind CSS via CDN -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-900 text-white">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-4xl mb-8 border-b border-gray-700 pb-4">Photo Gallery</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for photo in collections.photos %}
+        <div
+          class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:transform hover:scale-105"
+        >
+          <a
+            href="#"
+            class="photo-link"
+            data-full-url="{{ photo.sizes[0].url }}"
+          >
+            <img
+              class="w-full h-80 object-cover"
+              src="{% for size in photo.sizes %}{% if size.name == 'M' %}{{ size.url }}{% endif %}{% endfor %}{% if not photo.sizes contains 'M' %}{{ photo.preview }}{% endif %}"
+              alt="{{ photo.name }}"
+            />
+          </a>
+          <div class="p-4">
+            <div class="text-lg font-bold mb-2">{{ photo.name }}</div>
+            <div class="text-sm text-gray-400">{{ photo.photoslice_time }}</div>
+          </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
-  </div>
 
-  <!-- Modal for full size image -->
-  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center">
-    <div class="relative max-w-6xl mx-4">
-      <img id="fullImage" class="max-h-screen w-auto" src="" alt="">
-      <button id="closeModal" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
+    <!-- Modal for full size image -->
+    <div
+      id="imageModal"
+      class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center"
+    >
+      <div class="relative max-w-6xl mx-4">
+        <img id="fullImage" class="max-h-screen w-auto" src="" alt="" />
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 text-white text-2xl"
+        >
+          &times;
+        </button>
+      </div>
     </div>
-  </div>
 
-  <script>
-    // Initialize modal
-    const modal = document.getElementById('imageModal');
-    const fullImage = document.getElementById('fullImage');
-    const closeModal = document.getElementById('closeModal');
+    <script>
+      // Initialize modal
+      const modal = document.getElementById('imageModal');
+      const fullImage = document.getElementById('fullImage');
+      const closeModal = document.getElementById('closeModal');
 
-    // Add click event to photo links
-    document.querySelectorAll('.photo-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const fullUrl = this.getAttribute('data-full-url');
-        fullImage.src = fullUrl;
-        modal.classList.remove('hidden');
+      // Add click event to photo links
+      document.querySelectorAll('.photo-link').forEach((link) => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const fullUrl = this.getAttribute('data-full-url');
+          fullImage.src = fullUrl;
+          modal.classList.remove('hidden');
+        });
       });
-    });
 
-    // Close modal
-    closeModal.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-
-    // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
+      // Close modal
+      closeModal.addEventListener('click', () => {
         modal.classList.add('hidden');
-      }
-    });
+      });
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        modal.classList.add('hidden');
-      }
-    });
-  </script>
-  <script src="/gallery.js"></script>
-</body>
+      // Close modal when clicking outside
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.add('hidden');
+        }
+      });
+    </script>
+  </body>
 </html>
