@@ -8,8 +8,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   deploy:
@@ -23,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build
+        run: npx eleventy
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
