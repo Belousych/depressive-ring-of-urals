@@ -1,0 +1,39 @@
+name: Update Photo Gallery
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Every 1st day of the month at midnight
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Update photos
+      env:
+        YANDEX_OAUTH_TOKEN: ${{ secrets.YANDEX_OAUTH_TOKEN }}
+      run: |
+        curl -X GET \
+          --header 'Accept: application/json' \
+          --header "Authorization: OAuth ${{ secrets.YANDEX_OAUTH_TOKEN }}" \
+          'https://cloud-api.yandex.net/v1/disk/public/resources?public_key=https%3A%2F%2Fdisk.yandex.ru%2Fd%2Fh9QYHNj5ZL222w' > src/photos.json
+
+    - name: Build the site
+      run: npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_site
