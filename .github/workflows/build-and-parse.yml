@@ -29,3 +29,8 @@ jobs:
           if [ -f package.json ] && jq -e '.scripts.build' package.json > /dev/null; then
             npm run build
           fi
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
